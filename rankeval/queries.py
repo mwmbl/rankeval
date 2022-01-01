@@ -1,22 +1,16 @@
 """
 Create a dataset of plausible queries using autosuggest.
 """
-import os
-from pathlib import Path
 from random import Random
 
-import pandas as pd
 from pandas import DataFrame
 
+from rankeval.paths import QUERIES_DATASET_PATH
 from rankeval.search_api import retrieve_suggestions
 
 SEED_TERMS = {'ebay'}
 
 DATASET_SIZE = 1000
-
-DATA_DIR = Path(os.environ['HOME']) / 'data' / 'rankeval'
-QUERIES_DATASET_PATH = DATA_DIR / 'queries.csv'
-
 
 random = Random(1)
 
