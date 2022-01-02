@@ -8,7 +8,7 @@ import pandas as pd
 from pandas import DataFrame
 
 from rankeval.paths import QUERIES_DATASET_PATH, RANKINGS_DATASET_PATH
-from rankeval.search_api import retrieve_rankings
+from rankeval.dataset.search_api import retrieve_rankings
 
 BING_API_SUBSCRIPTION_KEY = os.environ['BING_API_SUBSCRIPTION_KEY']
 BING_SEARCH_API_ENDPOINT = "https://api.bing.microsoft.com/v7.0/search"

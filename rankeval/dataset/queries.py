@@ -6,7 +6,7 @@ from random import Random
 from pandas import DataFrame
 
 from rankeval.paths import QUERIES_DATASET_PATH
-from rankeval.search_api import retrieve_suggestions
+from rankeval.dataset.search_api import retrieve_suggestions
 
 SEED_TERMS = {'ebay'}
 
