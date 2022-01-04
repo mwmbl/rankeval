@@ -5,6 +5,7 @@ from abc import ABC, abstractmethod
 
 import numpy as np
 import pandas as pd
+from scipy.stats import sem
 from sklearn.metrics import ndcg_score
 
 from rankeval.paths import RANKINGS_DATASET_PATH
@@ -26,6 +27,8 @@ class RankingModel(ABC):
 
 def evaluate(ranking_model: RankingModel):
     dataset = pd.read_csv(RANKINGS_DATASET_PATH)
+    ndcg_scores = []
+    proportions = []
     for query, rankings in dataset.groupby('query'):
         top_ranked = rankings[['url']].iloc[:NUM_RESULTS_FOR_EVAL]
         top_ranked['score'] = CLICK_PROPORTIONS
@@ -40,7 +43,14 @@ def evaluate(ranking_model: RankingModel):
         print("Y true", y_true)
         print("Y predicted", y_predicted)
 
-        score = ndcg_score([y_true], [y_predicted])
-        print("Score", score)
+        proportion_matched = len(set(top_urls) & scores.keys()) / NUM_RESULTS_FOR_EVAL
+        proportions.append(proportion_matched)
 
-        break
+        score = ndcg_score([y_true], [y_predicted])
+        ndcg_scores.append(score)
+
+    print("Mean NDCG score", np.mean(ndcg_scores))
+    print("Std error", sem(ndcg_scores))
+    print()
+    print("Mean proportion score", np.mean(proportions))
+    print("Std error", sem(proportions))
