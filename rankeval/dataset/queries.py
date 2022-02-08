@@ -4,15 +4,16 @@ Create a dataset of plausible queries using autosuggest.
 from random import Random
 
 from pandas import DataFrame
+from requests import HTTPError
 
 from rankeval.paths import QUERIES_DATASET_PATH
 from rankeval.dataset.search_api import retrieve_suggestions
 
 SEED_TERMS = {'ebay'}
 
-DATASET_SIZE = 1000
+NUM_QUERIES = 2000
 
-random = Random(1)
+random = Random(2)
 
 
 def full_term(term: str) -> str:
@@ -28,7 +29,7 @@ def create_dataset() -> list[dict[str, str]]:
     done_queries = set()
     terms = set(SEED_TERMS)
 
-    while len(dataset) < DATASET_SIZE:
+    while len(done_queries) < NUM_QUERIES:
         term = random.choice(list(terms))
         query_type = random.choice([full_term, first_two_characters])
         query = query_type(term)
@@ -36,7 +37,11 @@ def create_dataset() -> list[dict[str, str]]:
         if query in done_queries:
             continue
 
-        suggestions = retrieve_suggestions(query)
+        try:
+            suggestions = retrieve_suggestions(query)
+        except HTTPError as e:
+            print("Exception getting results", e)
+            break
         dataset += [{'query': query, 'suggestion': suggestion} for suggestion in suggestions]
         done_queries.add(query)
         for suggestion in suggestions:
