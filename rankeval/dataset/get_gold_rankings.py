@@ -6,6 +6,7 @@ import os
 
 import pandas as pd
 from pandas import DataFrame
+from requests import HTTPError
 
 from rankeval.paths import QUERIES_DATASET_PATH, RANKINGS_DATASET_PATH
 from rankeval.dataset.search_api import retrieve_rankings
@@ -15,7 +16,7 @@ BING_SEARCH_API_ENDPOINT = "https://api.bing.microsoft.com/v7.0/search"
 BING_SUGGEST_API_ENDPOINT = "https://api.bing.microsoft.com/v7.0/Suggestions"
 
 
-NUM_QUERIES = 100
+NUM_QUERIES = 2000
 
 
 def get_query_rankings() -> DataFrame:
@@ -29,12 +30,16 @@ def get_query_rankings() -> DataFrame:
         .head()['suggestion']\
         .to_list()[:NUM_QUERIES]
 
-    print("Queries", queries)
+    print("Queries", len(queries))
 
     dataset = []
     for query in queries:
-        rankings = retrieve_rankings(query)
-        print("Rankings", rankings)
+        try:
+            rankings = retrieve_rankings(query)
+        except HTTPError as e:
+            print("Error getting rankings", e)
+            break
+        print("Rankings", len(dataset), rankings)
         rankings_df = DataFrame(rankings)
         rankings_df['query'] = query
         dataset.append(rankings_df)

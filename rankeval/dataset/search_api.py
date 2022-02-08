@@ -9,7 +9,7 @@ import requests
 BING_API_SUBSCRIPTION_KEY = os.environ['BING_API_SUBSCRIPTION_KEY']
 BING_SEARCH_API_ENDPOINT = "https://api.bing.microsoft.com/v7.0/search"
 BING_SUGGEST_API_ENDPOINT = "https://api.bing.microsoft.com/v7.0/Suggestions"
-SLEEP_TIME = 0.34
+SLEEP_TIME = 0.01
 
 
 def retrieve_from_endpoint(query, endpoint, **args):
