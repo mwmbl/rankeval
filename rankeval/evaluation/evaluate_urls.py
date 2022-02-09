@@ -10,7 +10,7 @@ from pandas import DataFrame
 
 from rankeval.evaluation.evaluate import evaluate, RankingModel, NUM_RESULTS_FOR_EVAL
 from rankeval.evaluation.urldb import find_matching_urls
-from rankeval.paths import RANKINGS_DATASET_PATH, URLS_PATH
+from rankeval.paths import URLS_PATH, RANKINGS_DATASET_TEST_PATH
 
 
 class OracleRankingModel(RankingModel):
@@ -37,7 +37,7 @@ class OracleRankingModel(RankingModel):
 
 def run():
     model = OracleRankingModel()
-    gold_standard = pd.read_csv(RANKINGS_DATASET_PATH)
+    gold_standard = pd.read_csv(RANKINGS_DATASET_TEST_PATH)
     model.prepare_rankings(gold_standard, URLS_PATH)
     evaluate(model)
 

@@ -8,10 +8,10 @@ import pandas as pd
 from scipy.stats import sem
 from sklearn.metrics import ndcg_score
 
-from rankeval.paths import RANKINGS_DATASET_PATH
-
 
 # Sourced from https://www.searchenginejournal.com/google-first-page-clicks/374516/
+from rankeval.paths import RANKINGS_DATASET_TEST_PATH
+
 CLICK_PROPORTIONS = [0.285, 0.157, 0.110, 0.080, 0.072, 0.051, 0.040, 0.032, 0.028, 0.025]
 NUM_RESULTS_FOR_EVAL = len(CLICK_PROPORTIONS)
 
@@ -26,12 +26,12 @@ class RankingModel(ABC):
 
 
 def evaluate(ranking_model: RankingModel):
-    dataset = pd.read_csv(RANKINGS_DATASET_PATH)
+    dataset = pd.read_csv(RANKINGS_DATASET_TEST_PATH)
     ndcg_scores = []
     proportions = []
     for query, rankings in dataset.groupby('query'):
         top_ranked = rankings[['url']].iloc[:NUM_RESULTS_FOR_EVAL]
-        top_ranked['score'] = CLICK_PROPORTIONS
+        top_ranked['score'] = CLICK_PROPORTIONS[:len(top_ranked)]
         scores = top_ranked.set_index('url')['score'].to_dict()
         print("Query", query, scores)
 
