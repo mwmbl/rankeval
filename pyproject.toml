@@ -8,9 +8,9 @@ authors = ["Daoud Clarke <daoud.clarke@gmail.com>"]
 python = ">=3.10,<3.11"
 requests = "^2.26.0"
 pandas = "^1.3.5"
-mwmbl = {path = "../mwmbl"}
 scipy = "^1.8.0"
 scikit-learn = "^1.0.2"
+mwmbl = {git = "ssh://git@github.com/mwmbl/mwmbl", rev = "refactor-for-evaluation"}
 
 [tool.poetry.dev-dependencies]
 

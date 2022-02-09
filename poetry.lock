@@ -144,11 +144,13 @@ uvicorn = "^0.16.0"
 zstandard = "^0.16.0"
 
 [package.extras]
-indexer = ["botocore (==1.23.20)", "boto3 (==1.20.20)", "ujson (==4.3.0)", "warcio (==1.7.4)", "idna (==3.3)", "beautifulsoup4 (==4.10.0)", "lxml (==4.6.4)", "jusText (==3.0.0)", "langdetect (==1.0.9)", "pyarrow (==6.0.0)", "pyspark (==3.2.0)", "Levenshtein (==0.16.0)", "spacy (==3.2.1)", "en-core-web-sm"]
+indexer = ["botocore (==1.23.20)", "boto3 (==1.20.20)", "ujson (==4.3.0)", "warcio (==1.7.4)", "idna (==3.3)", "beautifulsoup4 (==4.10.0)", "lxml (==4.6.4)", "jusText (==3.0.0)", "langdetect (==1.0.9)", "pyarrow (==6.0.0)", "pyspark (==3.2.0)", "Levenshtein (==0.16.0)", "spacy (==3.2.1)", "en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.2.0/en_core_web_sm-3.2.0.tar.gz"]
 
 [package.source]
-type = "directory"
-url = "../mwmbl"
+type = "git"
+url = "ssh://git@github.com/mwmbl/mwmbl"
+reference = "refactor-for-evaluation"
+resolved_reference = "e03e379ccf08f30860085d51a8ffa3bf4e4f3d15"
 
 [[package]]
 name = "numpy"
@@ -365,7 +367,7 @@ cffi = ["cffi (>=1.11)"]
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.10,<3.11"
-content-hash = "51194d57f4a081f356d1fbdb2e98f111c17389122d89ea379ed3e5411971838a"
+content-hash = "053dda8cfb7ad3206298c6133aad90cad4f1da12ea56c3ad0aeba74070f09700"
 
 [metadata.files]
 anyio = [
