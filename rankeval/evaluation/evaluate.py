@@ -33,9 +33,10 @@ def evaluate(ranking_model: RankingModel):
         top_ranked = rankings[['url']].iloc[:NUM_RESULTS_FOR_EVAL]
         top_ranked['score'] = CLICK_PROPORTIONS[:len(top_ranked)]
         scores = top_ranked.set_index('url')['score'].to_dict()
-        print("Query", query, scores)
+        print(f"Query: '{query}'", scores)
 
         predicted_urls = ranking_model.predict(query)
+        print("Predicted", predicted_urls)
         top_urls = predicted_urls[:NUM_RESULTS_FOR_EVAL]
         y_true = [scores.get(url, 0.0) for url in top_urls] + [0.0] * (10 - len(top_urls))
         y_predicted = list(range(NUM_RESULTS_FOR_EVAL, 0, -1))
