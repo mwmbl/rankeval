@@ -1,8 +1,6 @@
-import os
 import sys
 
-from mwmbl.tinysearchengine.app import get_config_and_index
-from mwmbl.tinysearchengine.indexer import TinyIndex, Document, NUM_PAGES, PAGE_SIZE
+from mwmbl.tinysearchengine.indexer import TinyIndex, Document
 from mwmbl.tinysearchengine.rank import Ranker
 
 from rankeval.evaluation.evaluate import RankingModel, evaluate
@@ -27,16 +25,10 @@ def run():
 
     completer = DummyCompleter()
 
-    tiny_index = TinyIndex(
-        item_factory=Document,
-        index_path=index_path,
-        num_pages=NUM_PAGES,
-        page_size=PAGE_SIZE,
-    )
-
-    ranker = Ranker(tiny_index, completer)
-    model = MwmblRankingModel(ranker)
-    evaluate(model)
+    with TinyIndex(item_factory=Document, index_path=index_path) as tiny_index:
+        ranker = Ranker(tiny_index, completer)
+        model = MwmblRankingModel(ranker)
+        evaluate(model)
 
 
 if __name__ == '__main__':
