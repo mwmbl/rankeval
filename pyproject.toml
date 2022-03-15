@@ -10,7 +10,8 @@ requests = "^2.26.0"
 pandas = "^1.3.5"
 scipy = "^1.8.0"
 scikit-learn = "^1.0.2"
-mwmbl = {git = "ssh://git@github.com/mwmbl/mwmbl", rev = "update-index"}
+#mwmbl = {git = "ssh://git@github.com/mwmbl/mwmbl", rev = "update-index"}
+mwmbl = {path = "../mwmbl", develop = true}
 
 [tool.poetry.dev-dependencies]
 

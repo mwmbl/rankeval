@@ -132,7 +132,7 @@ description = ""
 category = "main"
 optional = false
 python-versions = "^3.10"
-develop = false
+develop = true
 
 [package.dependencies]
 fastapi = "^0.70.1"
@@ -147,10 +147,8 @@ zstandard = "^0.16.0"
 indexer = ["botocore (==1.23.20)", "boto3 (==1.20.20)", "ujson (==4.3.0)", "warcio (==1.7.4)", "idna (==3.3)", "beautifulsoup4 (==4.10.0)", "lxml (==4.6.4)", "jusText (==3.0.0)", "langdetect (==1.0.9)", "pyarrow (==6.0.0)", "pyspark (==3.2.0)", "Levenshtein (==0.16.0)", "spacy (==3.2.1)", "en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.2.0/en_core_web_sm-3.2.0.tar.gz"]
 
 [package.source]
-type = "git"
-url = "ssh://git@github.com/mwmbl/mwmbl"
-reference = "update-index"
-resolved_reference = "e1e9e404a3f2c1f41947c61ea7a2ca37435bafa8"
+type = "directory"
+url = "../mwmbl"
 
 [[package]]
 name = "numpy"
@@ -367,7 +365,7 @@ cffi = ["cffi (>=1.11)"]
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.10,<3.11"
-content-hash = "c279dacf1c4f40b01ed06c15aa1b1249bb81f7ff130ff569328d18c3868b9bc5"
+content-hash = "43a39d9508e936c2cf6634b0089dcd2cd139705352cbe7acf6a01fb2bd1ca78b"
 
 [metadata.files]
 anyio = [
