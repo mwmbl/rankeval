@@ -12,6 +12,8 @@ scipy = "^1.8.0"
 scikit-learn = "^1.0.2"
 #mwmbl = {git = "ssh://git@github.com/mwmbl/mwmbl", rev = "update-index"}
 mwmbl = {path = "../mwmbl", develop = true}
+guildai = { git = "git@github.com:guildai/guildai.git", branch = "master" }
+html5lib = "^1.1"
 
 [tool.poetry.dev-dependencies]
 

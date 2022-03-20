@@ -24,11 +24,11 @@ def run():
 def get_dataset(completer, index_path):
     with TinyIndex(item_factory=Document, index_path=index_path) as tiny_index:
         ranker = Ranker(tiny_index, completer)
-        gold_standard = pd.read_csv(RANKINGS_DATASET_TRAIN_PATH)
+        gold_standard = pd.read_csv(RANKINGS_DATASET_TRAIN_PATH, index_col=0)
         dataset = []
         for query, rankings in gold_standard.groupby('query'):
             print("Query", query)
-            gold_standard = set(rankings['url'].tolist())
+            gold_standard = dict(zip(rankings['url'].tolist(), rankings.index.tolist()))
 
             predicted, terms = ranker.get_results(query + ' ')
             if len(predicted) == 0:
@@ -38,7 +38,7 @@ def get_dataset(completer, index_path):
             for item in predicted:
                 in_gold_standard = item.url in gold_standard
                 new_items.append({
-                    'in_gold_standard': in_gold_standard,
+                    'gold_standard_rank': gold_standard.get(item.url),
                     'query': query,
                     'url': item.url,
                     'title': item.title,
