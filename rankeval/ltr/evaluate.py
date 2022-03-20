@@ -5,11 +5,14 @@ from argparse import ArgumentParser
 
 import numpy as np
 import pandas as pd
+from mwmbl.tinysearchengine.ltr import ThresholdPredictor, FeatureExtractor
 from scipy.stats import sem
 from sklearn.base import BaseEstimator, clone
 from sklearn.dummy import DummyClassifier, DummyRegressor
 from sklearn.metrics import make_scorer, ndcg_score
 from sklearn.model_selection import GroupKFold, cross_val_score
+from sklearn.pipeline import make_pipeline
+from sklearn.tree import DecisionTreeClassifier
 
 from rankeval.evaluation.evaluate import CLICK_PROPORTIONS
 from rankeval.ltr.baseline import RandomRegressor
@@ -19,6 +22,7 @@ from rankeval.paths import LEARNING_TO_RANK_DATASET_PATH
 PREDICTORS = {
     'random': RandomRegressor(),
     'constant': DummyRegressor(),
+    'decision_tree': make_pipeline(FeatureExtractor(), ThresholdPredictor(0.0, DecisionTreeClassifier())),
 }
 
 
