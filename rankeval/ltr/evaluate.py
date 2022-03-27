@@ -3,24 +3,22 @@ Evaluate a learning to rank dataset.
 """
 import pickle
 from argparse import ArgumentParser
-from pathlib import Path
 
 import numpy as np
 import pandas as pd
 from mwmbl.tinysearchengine.ltr import ThresholdPredictor, FeatureExtractor
 from scipy.stats import sem
-from sklearn.base import BaseEstimator, clone
-from sklearn.dummy import DummyClassifier, DummyRegressor
-from sklearn.metrics import make_scorer, ndcg_score
-from sklearn.model_selection import GroupKFold, cross_val_score
+from sklearn.base import clone
+from sklearn.dummy import DummyRegressor
+from sklearn.metrics import ndcg_score
+from sklearn.model_selection import GroupKFold
 from sklearn.pipeline import make_pipeline
 from sklearn.tree import DecisionTreeClassifier
 from xgboost import XGBClassifier, XGBRegressor
 
 from rankeval.evaluation.evaluate import CLICK_PROPORTIONS
 from rankeval.ltr.baseline import RandomRegressor
-from rankeval.paths import LEARNING_TO_RANK_DATASET_PATH
-
+from rankeval.paths import LEARNING_TO_RANK_DATASET_PATH, MODEL_PATH
 
 PREDICTORS = {
     'random': RandomRegressor(),
@@ -29,9 +27,6 @@ PREDICTORS = {
     'xgb': make_pipeline(FeatureExtractor(), ThresholdPredictor(0.0, XGBClassifier())),
     'xgb_regressor': make_pipeline(FeatureExtractor(), XGBRegressor()),
 }
-
-
-MODEL_PATH = Path(__file__).parent.parent.parent / 'data' / 'model.pickle'
 
 
 def get_discount(rank: float):
