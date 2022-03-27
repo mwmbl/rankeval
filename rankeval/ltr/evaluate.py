@@ -1,7 +1,9 @@
 """
 Evaluate a learning to rank dataset.
 """
+import pickle
 from argparse import ArgumentParser
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -13,6 +15,7 @@ from sklearn.metrics import make_scorer, ndcg_score
 from sklearn.model_selection import GroupKFold, cross_val_score
 from sklearn.pipeline import make_pipeline
 from sklearn.tree import DecisionTreeClassifier
+from xgboost import XGBClassifier, XGBRegressor
 
 from rankeval.evaluation.evaluate import CLICK_PROPORTIONS
 from rankeval.ltr.baseline import RandomRegressor
@@ -23,7 +26,12 @@ PREDICTORS = {
     'random': RandomRegressor(),
     'constant': DummyRegressor(),
     'decision_tree': make_pipeline(FeatureExtractor(), ThresholdPredictor(0.0, DecisionTreeClassifier())),
+    'xgb': make_pipeline(FeatureExtractor(), ThresholdPredictor(0.0, XGBClassifier())),
+    'xgb_regressor': make_pipeline(FeatureExtractor(), XGBRegressor()),
 }
+
+
+MODEL_PATH = Path(__file__).parent.parent.parent / 'data' / 'model.pickle'
 
 
 def get_discount(rank: float):
@@ -37,6 +45,7 @@ def get_discount(rank: float):
 def run():
     parser = ArgumentParser()
     parser.add_argument('--predictor', required=True, choices=sorted(PREDICTORS))
+    parser.add_argument('--note', required=True)
 
     args = parser.parse_args()
 
@@ -78,6 +87,11 @@ def run():
     print("scores:", scores)
     print("mean_score:", np.mean(scores))
     print("stderr_score:", sem(scores))
+
+    final_model = clone(predictor)
+    final_model.fit(X, y)
+    with open(MODEL_PATH, 'wb') as output_file:
+        pickle.dump(final_model, output_file)
 
 
 if __name__ == '__main__':
