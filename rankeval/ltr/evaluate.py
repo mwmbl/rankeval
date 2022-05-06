@@ -24,8 +24,8 @@ PREDICTORS = {
     'random': RandomRegressor(),
     'constant': DummyRegressor(),
     'decision_tree': make_pipeline(FeatureExtractor(), ThresholdPredictor(0.0, DecisionTreeClassifier())),
-    'xgb': make_pipeline(FeatureExtractor(), ThresholdPredictor(0.0, XGBClassifier())),
-    'xgb_regressor': make_pipeline(FeatureExtractor(), XGBRegressor()),
+    'xgb': make_pipeline(FeatureExtractor(), ThresholdPredictor(0.0, XGBClassifier(scale_pos_weight=0.1))),
+    'xgb_regressor': make_pipeline(FeatureExtractor(), XGBRegressor(scale_pos_weight=1.0)),
 }
 
 

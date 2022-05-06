@@ -5,7 +5,7 @@ import sys
 
 import pandas as pd
 from mwmbl.tinysearchengine.indexer import TinyIndex, Document
-from mwmbl.tinysearchengine.rank import Ranker
+from mwmbl.tinysearchengine.rank import Ranker, HeuristicRanker
 
 from rankeval.evaluation.evaluate_ranker import DummyCompleter
 from rankeval.paths import RANKINGS_DATASET_TRAIN_PATH, LEARNING_TO_RANK_DATASET_PATH
@@ -23,7 +23,7 @@ def run():
 
 def get_dataset(completer, index_path):
     with TinyIndex(item_factory=Document, index_path=index_path) as tiny_index:
-        ranker = Ranker(tiny_index, completer)
+        ranker = HeuristicRanker(tiny_index, completer)
         gold_standard = pd.read_csv(RANKINGS_DATASET_TRAIN_PATH, index_col=0)
         dataset = []
         for query, rankings in gold_standard.groupby('query'):
@@ -35,6 +35,7 @@ def get_dataset(completer, index_path):
                 continue
 
             new_items = []
+            found_gold = False
             for item in predicted:
                 in_gold_standard = item.url in gold_standard
                 new_items.append({
@@ -46,8 +47,9 @@ def get_dataset(completer, index_path):
                     'score': item.score,
                 })
                 if in_gold_standard:
-                    dataset += new_items
-                    new_items = []
+                    found_gold = True
+            if found_gold:
+                dataset += new_items
 
     return dataset
 
