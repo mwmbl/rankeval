@@ -26,6 +26,10 @@ class RankingModel(ABC):
 
 
 def evaluate(ranking_model: RankingModel):
+    # TODO:
+    #  - output feature importances from XGBoost
+    #  - experiment with more features
+
     dataset = pd.read_csv(RANKINGS_DATASET_TEST_PATH)
     ndcg_scores = []
     proportions = []

@@ -4,6 +4,7 @@ Evaluate a learning to rank dataset.
 import pickle
 from argparse import ArgumentParser
 
+import mmh3
 import numpy as np
 import pandas as pd
 from mwmbl.tinysearchengine.ltr import ThresholdPredictor, FeatureExtractor
@@ -14,7 +15,7 @@ from sklearn.metrics import ndcg_score
 from sklearn.model_selection import GroupKFold
 from sklearn.pipeline import make_pipeline
 from sklearn.tree import DecisionTreeClassifier
-from xgboost import XGBClassifier, XGBRegressor
+from xgboost import XGBClassifier, XGBRegressor, XGBRanker
 
 from rankeval.evaluation.evaluate import CLICK_PROPORTIONS
 from rankeval.ltr.baseline import RandomRegressor
@@ -24,8 +25,9 @@ PREDICTORS = {
     'random': RandomRegressor(),
     'constant': DummyRegressor(),
     'decision_tree': make_pipeline(FeatureExtractor(), ThresholdPredictor(0.0, DecisionTreeClassifier())),
-    'xgb': make_pipeline(FeatureExtractor(), ThresholdPredictor(0.0, XGBClassifier(scale_pos_weight=0.1))),
-    'xgb_regressor': make_pipeline(FeatureExtractor(), XGBRegressor(scale_pos_weight=1.0)),
+    'xgb': make_pipeline(FeatureExtractor(), ThresholdPredictor(0.0, XGBClassifier(scale_pos_weight=0.1, reg_lambda=2))),
+    'xgb_regressor': make_pipeline(FeatureExtractor(), XGBRegressor(objective="reg:pseudohubererror")),
+    'xgb_ranker': make_pipeline(FeatureExtractor(), XGBRanker(objective="rank:map", reg_lambda=2)),
 }
 
 
@@ -53,6 +55,7 @@ def run():
 
     X = dataset[['query', 'url', 'title', 'extract', 'score']]
     y = dataset['gold_discount']
+    query_id, query_index = dataset['query'].factorize()
     groups = dataset['query']
 
     cross_validator = GroupKFold(n_splits=3)
@@ -62,7 +65,10 @@ def run():
     scores = []
     for train, test in splits:
         model = clone(predictor)
-        model.fit(X.iloc[train], y.iloc[train])
+        if args.predictor == 'xgb_ranker':
+            model.fit(X.iloc[train], y.iloc[train], xgbranker__qid=query_id[train])
+        else:
+            model.fit(X.iloc[train], y.iloc[train])
 
         predictions = model.predict(X.iloc[test])
 
@@ -84,7 +90,12 @@ def run():
     print("stderr_score:", sem(scores))
 
     final_model = clone(predictor)
-    final_model.fit(X, y)
+
+    if args.predictor == 'xgb_ranker':
+        final_model.fit(X, y, xgbranker__qid=query_id)
+    else:
+        final_model.fit(X, y)
+
     with open(MODEL_PATH, 'wb') as output_file:
         pickle.dump(final_model, output_file)
 
