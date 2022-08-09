@@ -1,0 +1,16 @@
+ltr:
+  main:
+    rankeval.ltr.evaluate
+  flags-import: yes
+  sourcecode:
+    - rankeval
+    - data
+
+rank:
+  main:
+    rankeval.evaluation.evaluate_ranker
+  flags-import: yes
+  sourcecode:
+    - rankeval
+    - data
+    - remote-datasets

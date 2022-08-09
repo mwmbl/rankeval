@@ -1,9 +1,10 @@
 import pickle
 import sys
+from argparse import ArgumentParser
 
 from mwmbl.tinysearchengine.indexer import TinyIndex, Document
 from mwmbl.tinysearchengine.ltr_rank import LTRRanker
-from mwmbl.tinysearchengine.rank import Ranker
+from mwmbl.tinysearchengine.rank import Ranker, HeuristicRanker
 
 from rankeval.evaluation.evaluate import RankingModel, evaluate
 from rankeval.paths import MODEL_PATH
@@ -24,14 +25,19 @@ class DummyCompleter:
 
 
 def run():
-    index_path = sys.argv[1]
+    arg_parser = ArgumentParser()
+    arg_parser.add_argument('--index', help='Path to the index', required=True)
+    arg_parser.add_argument('--note', required=True)
+
+    args = arg_parser.parse_args()
 
     completer = DummyCompleter()
 
-    with TinyIndex(item_factory=Document, index_path=index_path) as tiny_index:
+    with TinyIndex(item_factory=Document, index_path=args.index) as tiny_index:
         # ranker = Ranker(tiny_index, completer)
-        model = pickle.load(open(MODEL_PATH, 'rb'))
-        ranker = LTRRanker(model, tiny_index, completer)
+        ranker = HeuristicRanker(tiny_index, completer)
+        # model = pickle.load(open(MODEL_PATH, 'rb'))
+        # ranker = LTRRanker(model, tiny_index, completer)
         model = MwmblRankingModel(ranker)
         evaluate(model)
 

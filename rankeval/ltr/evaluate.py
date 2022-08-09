@@ -54,6 +54,8 @@ def run():
     print("Gold standard", dataset['gold_discount'])
 
     X = dataset[['query', 'url', 'title', 'extract', 'score']]
+    X['title'].fillna('', inplace=True)
+    X['extract'].fillna('', inplace=True)
     y = dataset['gold_discount']
     query_id, query_index = dataset['query'].factorize()
     groups = dataset['query']
