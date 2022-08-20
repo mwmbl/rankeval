@@ -26,6 +26,10 @@ class RankingModel(ABC):
 
 
 def evaluate(ranking_model: RankingModel):
+    # TODO:
+    #  - output feature importances from XGBoost
+    #  - experiment with more features
+
     dataset = pd.read_csv(RANKINGS_DATASET_TEST_PATH)
     ndcg_scores = []
     proportions = []
@@ -50,8 +54,8 @@ def evaluate(ranking_model: RankingModel):
         score = ndcg_score([y_true], [y_predicted])
         ndcg_scores.append(score)
 
-    print("Mean NDCG score", np.mean(ndcg_scores))
-    print("Std error", sem(ndcg_scores))
+    print("ndcg_score_mean: ", np.mean(ndcg_scores))
+    print("ndcg_score_sem:", sem(ndcg_scores))
     print()
-    print("Mean proportion score", np.mean(proportions))
-    print("Std error", sem(proportions))
+    print("proportion_score_mean:", np.mean(proportions))
+    print("proportion_score_sem:", sem(proportions))

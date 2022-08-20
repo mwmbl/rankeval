@@ -11,7 +11,7 @@ from rankeval.dataset.search_api import retrieve_suggestions
 
 SEED_TERMS = {'ebay'}
 
-NUM_QUERIES = 2000
+NUM_QUERIES = 20000
 
 random = Random(2)
 
