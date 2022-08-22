@@ -1,12 +1,12 @@
 """
 Identify terms we need in the index to evaluate ranking.
 """
+import json
 from html import unescape
 
 import pandas as pd
 
-from rankeval.paths import RANKINGS_DATASET_TRAIN_PATH
-
+from rankeval.paths import RANKINGS_DATASET_TRAIN_PATH, TRAIN_TERMS_PATH
 
 pd.options.display.width = 0
 
@@ -35,6 +35,7 @@ def run():
     dataset = pd.read_csv(RANKINGS_DATASET_TRAIN_PATH)
     queries = dataset['query'].unique().tolist()
     unescaped = [unescape(x) for x in queries]
+    print("Queries", unescaped)
     tokens = set()
     stopword_set = set(STOPWORDS)
     for query in unescaped:
@@ -44,6 +45,9 @@ def run():
     print("Num tokens", len(tokens))
     cleaned = tokens - stopword_set
     print("Cleaned", len(cleaned))
+
+    with open(TRAIN_TERMS_PATH, 'wt') as output_file:
+        json.dump(sorted(cleaned), output_file, indent=2)
 
 
 if __name__ == '__main__':
